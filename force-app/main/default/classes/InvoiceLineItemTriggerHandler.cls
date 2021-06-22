@@ -34,7 +34,10 @@ public with sharing class InvoiceLineItemTriggerHandler {
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
 	 */
-	public void afterInsert() {}
+	public void afterInsert()
+	{
+		InvoiceUtils.updateAmountILIs(this.triggerMapNew.values());
+	}
 
 	/**
 	 * @name: afterUpdate
@@ -47,5 +50,8 @@ public with sharing class InvoiceLineItemTriggerHandler {
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
 	 */
-	public void afterUpdate() {}
+	public void afterUpdate()
+	{
+		InvoiceUtils.updateAmountILIs(this.triggerMapNew.values());
+	}
 }
