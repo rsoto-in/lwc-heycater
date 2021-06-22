@@ -4,7 +4,7 @@
         <application>Test_Assignment</application>
         <visible>true</visible>
     </applicationVisibilities>
-    <description>Assignment Permission Set for Sales Users</description>
+    <description>Permission Set for Sales Users</description>
     <fieldPermissions>
         <editable>true</editable>
         <field>Invoice_Line_Item__c.Amount__c</field>
@@ -21,7 +21,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>AssignmentSalesUser</label>
+    <label>Sales User</label>
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>true</allowDelete>
