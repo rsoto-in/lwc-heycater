@@ -10,16 +10,19 @@
 @isTest
 public class TestDataFactory {
 
-	private static String INVOICE_DATA_TEST = 'TestInvoices';
-	private static String INVOICE_LINE_ITEM_DATA_TEST = 'TestInvoiceLineItems';
-	private static String USERNAME_TEST = 'sales@example.test';
-	private static String LAST_NAME_TEST = 'Sales';
-	private static String EMAIL_TEST = 'sales@example.invalid';
-	private static String ALIAS_TEST = 'sales';
-	private static String TIME_ZONE_SID_KEY_TEST = 'Europe/Paris';
-	private static String LOCALE_SID_KEY_TEST = 'en_US';
-	private static String EMAIL_ENCODING_KEY_TEST = 'UTF-8';
-	private static String LANGUAGE_LOCALE_KEY_TEST = 'en_US';
+	public static final String 	USERNAME_TEST = 'sales@example.test';
+	public static final String 	LAST_NAME_TEST = 'Sales';
+	public static final String 	EMAIL_TEST = 'sales@example.invalid';
+	public static final Double	ILI_AMOUNT_MIN_LIMIT = -99999999999999.98;
+	public static final Double	ILI_AMOUNT_MAX_LIMIT = 99999999999999.9;
+	
+	private static final String ALIAS_TEST = 'sales';
+	private static final String TIME_ZONE_SID_KEY_TEST = 'Europe/Paris';
+	private static final String LOCALE_SID_KEY_TEST = 'en_US';
+	private static final String EMAIL_ENCODING_KEY_TEST = 'UTF-8';
+	private static final String LANGUAGE_LOCALE_KEY_TEST = 'en_US';
+	private static final String INVOICE_DATA_TEST = 'TestInvoices';
+	private static final String	INVOICE_LINE_ITEM_DATA_TEST = 'TestInvoiceLineItems';
 
 	/**
 	 * @name: createUser
@@ -148,9 +151,11 @@ public class TestDataFactory {
 		i = 0;
 		count = 0;
 		// Iterate through Invoices
-		for (Invoice__c invoice : invoicesList) {
+		for (Invoice__c invoice : invoicesList)
+		{
 			// Link Invoice Line Items to current Invoice until set limit
-			for (i = count; i < count + numberOfRelatedILIs; i++) {
+			for (i = count; i < count + numberOfRelatedILIs; i++)
+			{
 				if (invoiceLineItemsList != null && i < invoiceLineItemsList.size() - 1)
 				{
 					invoiceLineItemsList[i].Invoice__c = invoice.Id;
@@ -185,8 +190,9 @@ public class TestDataFactory {
 
 		// Filter Invoice Line Items
 		invoiceLineItemsList = new List<Invoice_Line_Item__c>();
-		for (Invoice_Line_Item__c item : itemsList) {
-			if (item.Amount__c > -99999999999999.98 && item.Amount__c < 99999999999999.98)
+		for (Invoice_Line_Item__c item : itemsList)
+		{
+			if (item.Amount__c > ILI_AMOUNT_MIN_LIMIT && item.Amount__c < ILI_AMOUNT_MAX_LIMIT)
 			{
 				invoiceLineItemsList.add(item);
 			}
