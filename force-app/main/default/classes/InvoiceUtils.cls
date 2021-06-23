@@ -15,7 +15,8 @@ public with sharing class InvoiceUtils {
 	 * @description: Method for adding a new InvoiceLineItem to a Item per Invoice Map
 	 * @author: Richard Soto - richardsoto@outlook.com
 	 * @version: 0.1
-	 * @param: N/A
+	 * @param: 	itemsByInvoiceMap	Map<Id, List<Invoice_Line_Item__c>>		Map of List of Invoice Line Items per Invoice Id
+	 * 			item				Invoice_Line_Item__c					A Invoice Line Item to add
 	 * @return: N/A
 	 * @history
 	 * =======
@@ -49,8 +50,9 @@ public with sharing class InvoiceUtils {
 	 * @description: Method for creating a InvoiceLineItems per Invoice map
 	 * @author: Richard Soto - richardsoto@outlook.com
 	 * @version: 0.1
-	 * @param: N/A
-	 * @return: N/A
+	 * @param:	invoiceIdsSet	Set<Id>						Set of Invoice Ids to map
+	 * 			itemsList		List<Invoice_Line_Item__c>	List of Invoice Line Item to map
+	 * @return:	Map<Id, List<Invoice_Line_Item__c>>		Map of List of Invoice Line Items per Invoice Id
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
@@ -84,8 +86,9 @@ public with sharing class InvoiceUtils {
 	 * @description: Method for calculating Amount_Invoice_Line_Items__c field
 	 * @author: Richard Soto - richardsoto@outlook.com
 	 * @version: 0.1
-	 * @param: N/A
-	 * @return: N/A
+	 * @param:	invoiceIdsSet	Set<Id>						Set of Invoice Ids to calculate
+	 * 			itemsList		List<Invoice_Line_Item__c>	List of Invoice Line Items with Invoices to calculate
+	 * @return: List<Invoice__c>	List of Invoices after calculation
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
@@ -117,26 +120,71 @@ public with sharing class InvoiceUtils {
 	}
 
 	/**
-	 * @name: updateAmountILIs
-	 * @description: Method for updating Amount_Invoice_Line_Items__c field
+	 * @name: getILIsWithInvoice
+	 * @description: Method for getting a list of Invoice Line Items with Invoice
 	 * @author: Richard Soto - richardsoto@outlook.com
 	 * @version: 0.1
-	 * @param: N/A
-	 * @return: N/A
+	 * @param: itemsList	List<Invoice_Line_Item__c>		List of Invoice Line Items to filter
+	 * @return: List<Invoice_Line_Item__c>	List of Invoice Line Items with Invoice
 	 * @history
 	 * =======
-	 * v0.1 - 2021-06-21 - Initial version
+	 * v0.1 - 2021-06-23 - Initial version
 	 */
-	public static void updateAmountILIs(List<Invoice_Line_Item__c> itemsList)
+	public static List<Invoice_Line_Item__c> getILIsWithInvoice(List<Invoice_Line_Item__c> itemsList)
+	{
+		List<Invoice_Line_Item__c> itemsWithInvoiceList;
+
+		itemsWithInvoiceList = new List<Invoice_Line_Item__c>();
+		for (Invoice_Line_Item__c item : itemsList)
+		{
+			if (item.Invoice__c != null)
+			{
+				itemsWithInvoiceList.add(item);
+			}	
+		}
+		return itemsWithInvoiceList;
+	}
+
+	/**
+	 * @name: getInvoiceIdsSet
+	 * @description: Method for getting a set of Invoice Ids
+	 * @author: Richard Soto - richardsoto@outlook.com
+	 * @version: 0.1
+	 * @param: itemsList	List<Invoice_Line_Item__c>		List of Invoice Line Items with Invoices to get
+	 * @return: Set<Id>	Set of Invoice Ids
+	 * @history
+	 * =======
+	 * v0.1 - 2021-06-23 - Initial version
+	 */
+	public static Set<Id> getInvoiceIdsSet(List<Invoice_Line_Item__c> itemsList)
 	{
 		Set<Id>				invoiceIdsSet;
-		List<Invoice__c>	invoicesList;
 
 		invoiceIdsSet = new Set<Id>();
 		for (Invoice_Line_Item__c item : itemsList)
 		{
 			invoiceIdsSet.add(item.Invoice__c);
 		}
+		return invoiceIdsSet;
+	}
+
+	/**
+	 * @name: updateAmountILIs
+	 * @description: Method for updating Amount_Invoice_Line_Items__c field
+	 * @author: Richard Soto - richardsoto@outlook.com
+	 * @version: 0.1
+	 * @param: 	invoiceIdsSet	Set<Id>						Set of Invoice Ids to calculate
+	 * 			itemsList		List<Invoice_Line_Item__c>	List of Invoice Line Items to use for Invoice calculation
+	 * @return: N/A
+	 * @history
+	 * =======
+	 * v0.1 - 2021-06-21 - Initial version
+	 * v0.1 - 2021-06-23 - Receive a set of Invoice Ids to be updated
+	 */
+	public static void updateAmountILIs(Set<Id>	invoiceIdsSet, List<Invoice_Line_Item__c> itemsList)
+	{
+		List<Invoice__c>	invoicesList;
+
 		invoicesList = new List<Invoice__c>();
 		invoicesList.addAll(InvoiceUtils.calculateAmountILIs(invoiceIdsSet, itemsList));
 		if (!invoicesList.isEmpty())

@@ -6,10 +6,12 @@
  * @history
  * =======
  * v0.1 - 2021-06-21 - Initial version
+ * v0.2 - 2021-06-21 - Add After Delete functionality
  */
 trigger InvoiceLineItemTrigger on Invoice_Line_Item__c (
 	after insert,
-	after update) {
+	after update,
+	after delete) {
 	
 	// Get trigger setup configuration
 	TriggerSetup__mdt setup = TriggerSetup__mdt.getInstance('InvoiceLineItemTrigger');
@@ -31,6 +33,13 @@ trigger InvoiceLineItemTrigger on Invoice_Line_Item__c (
 			if (Trigger.isAfter)
 			{
 				handler.afterUpdate();
+			}
+		}
+		else if (Trigger.isDelete)
+		{
+			if (Trigger.isAfter)
+			{
+				handler.afterDelete();
 			}
 		}
 	}
