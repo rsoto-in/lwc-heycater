@@ -1,0 +1,33 @@
+<template>
+	<div if:true={recordId}>
+		<div class="slds-box" if:true={objectInfos}>
+			<lightning-card title={invoiceLabel}>
+				<lightning-record-view-form
+					record-id={recordId}
+					object-api-name={invoice}>
+					<lightning-layout>
+						<lightning-layout-item padding="around-small">
+							<lightning-output-field field-name={invoiceName}></lightning-output-field>
+						</lightning-layout-item>
+						<lightning-layout-item padding="around-small">
+							<lightning-output-field field-name={invoiceAmountILIs}></lightning-output-field>					
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-record-view-form>
+				<template if:true={items}>
+					<lightning-card title={itemLabel}>
+						<div class="slds-var-m-horizontal_medium slds-var-m-vertical_large slds-table_col-bordered">
+							<lightning-datatable key-field="id" data={itemsList} columns={columns} hide-checkbox-column resize-column-disabled></lightning-datatable>
+						</div>
+					</lightning-card>
+				</template>
+				<template if:true={error}>
+					<!-- Error -->
+				</template>
+				<div slot="footer">
+					<lightning-button label={close} variant="brand" onclick={handleClose}></lightning-button>
+				</div>
+			</lightning-card>
+		</div>
+	</div>
+</template>
