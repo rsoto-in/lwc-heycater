@@ -8,7 +8,7 @@
  * v0.1 - 2021-06-21 - Initial version
  */
 @isTest
-public class TestDataFactory {
+public with sharing class TestDataFactory {
 
 	public static final String 	USERNAME_TEST = 'sales@example.test';
 	public static final String 	LAST_NAME_TEST = 'Sales';

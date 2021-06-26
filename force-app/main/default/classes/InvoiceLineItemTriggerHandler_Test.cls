@@ -9,7 +9,7 @@
  * v0.1 - 2021-06-21 - Initial version
  */
 @isTest
-private inherited sharing class InvoiceLineItemTriggerHandler_Test {
+private with sharing class InvoiceLineItemTriggerHandler_Test {
 
 	private static final String	PROFILE_NAME_TEST = 'Standard User';
 	private static final String	PERMISSION_SET_NAME_TEST = 'SalesUser';
@@ -156,7 +156,6 @@ private inherited sharing class InvoiceLineItemTriggerHandler_Test {
 		Map<Id, Decimal> 					sumByInvoiceBeforeMap;
 		Map<Id, Decimal> 					sumByInvoiceAfterMap;
 		Decimal								sum;
-		Id									invoiceId;
 
 		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
 		{
@@ -216,11 +215,9 @@ private inherited sharing class InvoiceLineItemTriggerHandler_Test {
 		{
 			if (sumByInvoiceAfterMap.containsKey(id))
 			{
-				invoiceId = id;
-				break;
+				System.assertEquals(sumByInvoiceBeforeMap.get(id), sumByInvoiceAfterMap.get(id), INVOICE_NOT_UPDATED_MSG);
 			}
 		}
-		System.assertEquals(sumByInvoiceBeforeMap.get(invoiceId), sumByInvoiceAfterMap.get(invoiceId), INVOICE_NOT_UPDATED_MSG);
 	}
 
 	/**
@@ -329,7 +326,6 @@ private inherited sharing class InvoiceLineItemTriggerHandler_Test {
 		Map<Id, Decimal> 					sumByInvoiceBeforeMap;
 		Map<Id, Decimal> 					sumByInvoiceAfterMap;
 		Decimal								sum;
-		Id									invoiceId;
 
 		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
 		{
@@ -389,11 +385,9 @@ private inherited sharing class InvoiceLineItemTriggerHandler_Test {
 		{
 			if (sumByInvoiceAfterMap.containsKey(id))
 			{
-				invoiceId = id;
-				break;
+				System.assertEquals(sumByInvoiceBeforeMap.get(id), sumByInvoiceAfterMap.get(id), INVOICE_UPDATED_MSG);
 			}
 		}
-		System.assertEquals(sumByInvoiceBeforeMap.get(invoiceId), sumByInvoiceAfterMap.get(invoiceId), INVOICE_UPDATED_MSG);
 	}
 
 	/**
@@ -419,7 +413,6 @@ private inherited sharing class InvoiceLineItemTriggerHandler_Test {
 		Map<Id, Invoice__c> 				invoiceBeforeMap;
 		Map<Id, Invoice__c> 				invoiceAfterMap;
 		Decimal								sum;
-		Id									invoiceId;
 
 		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
 		{
@@ -471,18 +464,16 @@ private inherited sharing class InvoiceLineItemTriggerHandler_Test {
 		{
 			if (invoiceAfterMap.containsKey(id))
 			{
-				invoiceId = id;
-				break;
+				System.assertEquals(
+					invoiceBeforeMap.get(id).Amount_Invoice_Line_Items__c, 
+					invoiceAfterMap.get(id).Amount_Invoice_Line_Items__c,
+					INVOICE_UPDATED_MSG);
+				System.assertEquals(
+					invoiceBeforeMap.get(id).LastModifiedDate,
+					invoiceAfterMap.get(id).LastModifiedDate, 
+					INVOICE_UPDATED_MSG);
 			}
 		}
-		System.assertEquals(
-			invoiceBeforeMap.get(invoiceId).Amount_Invoice_Line_Items__c, 
-			invoiceAfterMap.get(invoiceId).Amount_Invoice_Line_Items__c,
-			INVOICE_UPDATED_MSG);
-		System.assertEquals(
-			invoiceBeforeMap.get(invoiceId).LastModifiedDate,
-			invoiceAfterMap.get(invoiceId).LastModifiedDate, 
-			INVOICE_UPDATED_MSG);
 	}
 
 	/**
@@ -589,7 +580,6 @@ private inherited sharing class InvoiceLineItemTriggerHandler_Test {
 		Map<Id, Decimal> 					sumByInvoiceBeforeMap;
 		Map<Id, Decimal> 					sumByInvoiceAfterMap;
 		Decimal								sum;
-		Id									invoiceId;
 
 		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
 		{
@@ -640,10 +630,8 @@ private inherited sharing class InvoiceLineItemTriggerHandler_Test {
 		{
 			if (sumByInvoiceAfterMap.containsKey(id))
 			{
-				invoiceId = id;
-				break;
+				System.assertEquals(sumByInvoiceBeforeMap.get(id), sumByInvoiceAfterMap.get(id), INVOICE_UPDATED_MSG);
 			}
 		}
-		System.assertEquals(sumByInvoiceBeforeMap.get(invoiceId), sumByInvoiceAfterMap.get(invoiceId), INVOICE_UPDATED_MSG);
 	}
 }

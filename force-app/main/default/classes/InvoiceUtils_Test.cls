@@ -9,7 +9,7 @@
  * v0.1 - 2021-06-21 - Initial version
  */
 @isTest
-private inherited sharing class InvoiceUtils_Test {
+private with sharing class InvoiceUtils_Test {
 
 	private static final String	PROFILE_NAME_TEST = 'Standard User';
 	private static final String	PERMISSION_SET_NAME_TEST = 'SalesUser';
@@ -637,7 +637,7 @@ private inherited sharing class InvoiceUtils_Test {
 	 * @name: updateAmountILIsPositiveTest
 	 * @description: Testing updateAmountILIs method with positive outcome
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.2
 	 * @param: N/A
 	 * @return: N/A
 	 * @history

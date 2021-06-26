@@ -14,7 +14,7 @@ public with sharing class InvoiceUtils {
 	 * @name: calculateAmountILIs
 	 * @description: Method for calculating Amount_Invoice_Line_Items__c field
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.2
 	 * @param:	invoiceIdsSet	Set<Id>						Set of Invoice Ids to calculate
 	 * 			itemsList		List<Invoice_Line_Item__c>	List of Invoice Line Items with Invoices to calculate
 	 * @return: List<Invoice__c>	List of Invoices after calculation
@@ -66,7 +66,7 @@ public with sharing class InvoiceUtils {
 	 * @name: getInvoiceIdsSet
 	 * @description: Gets a set of Invoice Ids
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.2
 	 * @param: itemsList	List<Invoice_Line_Item__c>		List of Invoice Line Items with Invoices to get
 	 * @return: Set<Id>	Set of Invoice Ids
 	 * @history
@@ -105,7 +105,7 @@ public with sharing class InvoiceUtils {
 	 * @name: updateAmountILIs
 	 * @description: Method for updating Amount_Invoice_Line_Items__c field
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.3
 	 * @param: 	invoiceIdsSet	Set<Id>						Set of Invoice Ids to calculate
 	 * 			itemsList		List<Invoice_Line_Item__c>	List of Invoice Line Items to use for Invoice calculation
 	 * @return: N/A

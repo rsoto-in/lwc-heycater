@@ -14,7 +14,7 @@ public with sharing class InvoiceLineItemUtils {
 	 * @name: addItemToInvoiceMap
 	 * @description: Adds a new InvoiceLineItem to a Item per Invoice Map
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.3
 	 * @param: 	itemsByInvoiceMap	Map<Id, List<Invoice_Line_Item__c>>		Map of List of Invoice Line Items per Invoice Id
 	 * 			item				Invoice_Line_Item__c					A Invoice Line Item to add
 	 * @return: N/A
@@ -61,7 +61,7 @@ public with sharing class InvoiceLineItemUtils {
 	 * @name: getItemsByInvoiceMap
 	 * @description: Creates an InvoiceLineItems by Invoice map
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.3
 	 * @param:	invoiceIdsSet	Set<Id>						Set of Invoice Ids to map
 	 * 			itemsList		List<Invoice_Line_Item__c>	List of Invoice Line Item to map
 	 * @return:	Map<Id, List<Invoice_Line_Item__c>>		Map of List of Invoice Line Items per Invoice Id
@@ -113,7 +113,7 @@ public with sharing class InvoiceLineItemUtils {
 	 * @name: getILIsWithInvoice
 	 * @description: Method for getting a list of Invoice Line Items with Invoice
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.3
 	 * @param: itemsList	List<Invoice_Line_Item__c>		List of Invoice Line Items to filter
 	 * @return: List<Invoice_Line_Item__c>	List of Invoice Line Items with Invoice
 	 * @history
@@ -156,7 +156,7 @@ public with sharing class InvoiceLineItemUtils {
 	 * @name: getItemsWithoutChanges
 	 * @description: Method for getting a set of ILIs Ids that don't have Invoice and Amount changes
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.3
 	 * @param: itemsList	List<Invoice_Line_Item__c>		List of Invoice Line Items with Invoices to get
 	 * @return: Set<Id>	Set of Invoice Ids
 	 * @history
