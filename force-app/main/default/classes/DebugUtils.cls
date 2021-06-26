@@ -28,6 +28,7 @@ public with sharing class DebugUtils {
 		if (e != null)
 		{
 			System.debug(e.getTypeName());
+			System.debug(e.getStackTraceString());
 			System.debug(EXCEPTION_MSG + e.getMessage());
 		}
 	}

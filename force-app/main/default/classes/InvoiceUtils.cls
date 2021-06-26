@@ -21,6 +21,7 @@ public with sharing class InvoiceUtils {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
+	 * v0.2 - 2021-06-27 - Add exception handling
 	 */
 	@TestVisible
 	private static List<Invoice__c> calculateAmountILIs(
@@ -32,28 +33,38 @@ public with sharing class InvoiceUtils {
 		List<Invoice_Line_Item__c>			innerItemsList;
 		Double amount;
 
-		itemsByInvoiceMap = InvoiceLineItemUtils.getItemsByInvoiceMap(invoiceIdsSet, itemsList);
 		invoicesList = new List<Invoice__c>();
-		for (Invoice__c invoice : [SELECT Id, Amount_Invoice_Line_Items__c FROM Invoice__c WHERE Id IN :invoiceIdsSet])
+		try 
 		{
-			invoice.Amount_Invoice_Line_Items__c = 0;
-			innerItemsList = itemsByInvoiceMap.get(invoice.Id);
-			if (innerItemsList != null)
+			if (!invoiceIdsSet.isEmpty())
 			{
-				for (Invoice_Line_Item__c item : innerItemsList)
+				itemsByInvoiceMap = InvoiceLineItemUtils.getItemsByInvoiceMap(invoiceIdsSet, itemsList);
+				for (Invoice__c invoice : [SELECT Id, Amount_Invoice_Line_Items__c FROM Invoice__c WHERE Id IN :invoiceIdsSet])
 				{
-					amount = item.Amount__c != null ? item.Amount__c : 0;
-					invoice.Amount_Invoice_Line_Items__c += amount;
+					invoice.Amount_Invoice_Line_Items__c = 0;
+					innerItemsList = itemsByInvoiceMap.get(invoice.Id);
+					if (innerItemsList != null)
+					{
+						for (Invoice_Line_Item__c item : innerItemsList)
+						{
+							amount = item.Amount__c != null ? item.Amount__c : 0;
+							invoice.Amount_Invoice_Line_Items__c += amount;
+						}
+					}
+					invoicesList.add(invoice);
 				}
 			}
-			invoicesList.add(invoice);
+		}
+		catch (Exception e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
 		}
 		return invoicesList;
 	}
 
 	/**
 	 * @name: getInvoiceIdsSet
-	 * @description: Method for getting a set of Invoice Ids
+	 * @description: Gets a set of Invoice Ids
 	 * @author: Richard Soto - richardsoto@outlook.com
 	 * @version: 0.1
 	 * @param: itemsList	List<Invoice_Line_Item__c>		List of Invoice Line Items with Invoices to get
@@ -61,15 +72,31 @@ public with sharing class InvoiceUtils {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-23 - Initial version
+	 * v0.2 - 2021-06-26 - Add exception handling
 	 */
 	public static Set<Id> getInvoiceIdsSet(List<Invoice_Line_Item__c> itemsList)
 	{
 		Set<Id>				invoiceIdsSet;
 
 		invoiceIdsSet = new Set<Id>();
-		for (Invoice_Line_Item__c item : itemsList)
+		try
 		{
-			invoiceIdsSet.add(item.Invoice__c);
+			for (Invoice_Line_Item__c item : itemsList)
+			{
+				invoiceIdsSet.add(item.Invoice__c);
+			}
+		}
+		catch (NullPointerException e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
+		}
+		catch (SObjectException e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
+		}
+		catch (Exception e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
 		}
 		return invoiceIdsSet;
 	}
@@ -85,17 +112,24 @@ public with sharing class InvoiceUtils {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
-	 * v0.1 - 2021-06-23 - Receive a set of Invoice Ids to be updated
+	 * v0.2 - 2021-06-23 - Receive a set of Invoice Ids to be updated
+	 * v0.3 - 2021-06-26 - Add exception handling
 	 */
 	public static void updateAmountILIs(Set<Id>	invoiceIdsSet, List<Invoice_Line_Item__c> itemsList)
 	{
 		List<Invoice__c>	invoicesList;
 
-		invoicesList = new List<Invoice__c>();
-		invoicesList.addAll(InvoiceUtils.calculateAmountILIs(invoiceIdsSet, itemsList));
-		if (!invoicesList.isEmpty())
+		invoicesList = calculateAmountILIs(invoiceIdsSet, itemsList);
+		try
 		{
-			update invoicesList;
+			if (!invoicesList.isEmpty())
+			{
+				update invoicesList;
+			}
+		}
+		catch (Exception e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
 		}
 	}
 }
