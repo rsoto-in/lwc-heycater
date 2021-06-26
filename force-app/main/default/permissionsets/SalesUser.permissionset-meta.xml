@@ -4,6 +4,10 @@
         <application>Test_Assignment</application>
         <visible>true</visible>
     </applicationVisibilities>
+    <classAccesses>
+        <apexClass>InvoiceLineItemsController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <description>Permission Set for Sales Users</description>
     <fieldPermissions>
         <editable>true</editable>
