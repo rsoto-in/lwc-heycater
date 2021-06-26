@@ -12,7 +12,7 @@ public with sharing class InvoiceLineItemUtils {
 
 	/**
 	 * @name: addItemToInvoiceMap
-	 * @description: Method for adding a new InvoiceLineItem to a Item per Invoice Map
+	 * @description: Adds a new InvoiceLineItem to a Item per Invoice Map
 	 * @author: Richard Soto - richardsoto@outlook.com
 	 * @version: 0.1
 	 * @param: 	itemsByInvoiceMap	Map<Id, List<Invoice_Line_Item__c>>		Map of List of Invoice Line Items per Invoice Id
@@ -22,21 +22,19 @@ public with sharing class InvoiceLineItemUtils {
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
 	 * v0.2 - 2021-06-26 - Method moved to InvoiceLineItemUtils
+	 * v0.3 - 2021-06-26 - Add exception handling
 	 */
 	@TestVisible
 	private static void addItemToInvoiceMap(Map<Id, List<Invoice_Line_Item__c>> itemsByInvoiceMap, Invoice_Line_Item__c item)
 	{
 		List<Invoice_Line_Item__c> itemList;
 
-		if (itemsByInvoiceMap != null)
+		try
 		{
 			if (!itemsByInvoiceMap.isEmpty() && itemsByInvoiceMap.containsKey(item.Invoice__c))
 			{
 				itemList = itemsByInvoiceMap.get(item.Invoice__c);
-				if (itemList != null)
-				{
-					itemList.add(item);
-				}
+				itemList.add(item);
 			}
 			else
 			{
@@ -45,11 +43,23 @@ public with sharing class InvoiceLineItemUtils {
 				itemsByInvoiceMap.put(item.Invoice__c, itemList);
 			}
 		}
+		catch (NullPointerException e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
+		}
+		catch (SObjectException e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
+		}
+		catch (Exception e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
+		}
 	}
 
 	/**
 	 * @name: getItemsByInvoiceMap
-	 * @description: Method for creating a InvoiceLineItems per Invoice map
+	 * @description: Creates an InvoiceLineItems by Invoice map
 	 * @author: Richard Soto - richardsoto@outlook.com
 	 * @version: 0.1
 	 * @param:	invoiceIdsSet	Set<Id>						Set of Invoice Ids to map
@@ -59,6 +69,7 @@ public with sharing class InvoiceLineItemUtils {
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
 	 * v0.2 - 2021-06-26 - Method moved to InvoiceLineItemUtils
+	 * v0.3 - 2021-06-26 - Add exception handling
 	 */
 	public static Map<Id, List<Invoice_Line_Item__c>> getItemsByInvoiceMap(
 		Set<Id> invoiceIdsSet,
@@ -67,19 +78,33 @@ public with sharing class InvoiceLineItemUtils {
 		Set<Id>								itemIdsSet;
 		Map<Id, List<Invoice_Line_Item__c>>	itemsByInvoiceMap;
 
-		// Get all related InvoiceLineItems
 		itemIdsSet = new Set<Id>();
 		itemsByInvoiceMap = new Map<Id, List<Invoice_Line_Item__c>>();
-		for (Invoice_Line_Item__c item : itemsList)
+		try
 		{
-			itemIdsSet.add(item.Id);
-			addItemToInvoiceMap(itemsByInvoiceMap, item);
+			// Get all related InvoiceLineItems
+			for (Invoice_Line_Item__c item : itemsList)
+			{
+				itemIdsSet.add(item.Id);
+				addItemToInvoiceMap(itemsByInvoiceMap, item);
+			}
+			if (!invoiceIdsSet.isEmpty() && !itemIdsSet.isEmpty())
+			{
+				for (Invoice_Line_Item__c item : [SELECT Id, Invoice__c, Amount__c FROM Invoice_Line_Item__c 
+													WHERE Invoice__c IN :invoiceIdsSet 
+													AND Id NOT IN :itemIdsSet])
+				{
+					addItemToInvoiceMap(itemsByInvoiceMap, item);
+				}
+			}
 		}
-		for (Invoice_Line_Item__c item : [SELECT Id, Invoice__c, Amount__c FROM Invoice_Line_Item__c 
-											WHERE Invoice__c IN :invoiceIdsSet 
-											AND Id NOT IN :itemIdsSet])
+		catch (NullPointerException e)
 		{
-			addItemToInvoiceMap(itemsByInvoiceMap, item);
+			DebugUtils.printExceptionTypeAndMessage(e);
+		}
+		catch (Exception e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
 		}
 		return itemsByInvoiceMap;
 	}
@@ -95,18 +120,34 @@ public with sharing class InvoiceLineItemUtils {
 	 * =======
 	 * v0.1 - 2021-06-23 - Initial version
 	 * v0.2 - 2021-06-26 - Method moved to InvoiceLineItemUtils
+	 * v0.3 - 2021-06-26 - Add exception handling
 	 */
 	public static List<Invoice_Line_Item__c> getILIsWithInvoice(List<Invoice_Line_Item__c> itemsList)
 	{
 		List<Invoice_Line_Item__c> itemsWithInvoiceList;
 
 		itemsWithInvoiceList = new List<Invoice_Line_Item__c>();
-		for (Invoice_Line_Item__c item : itemsList)
+		try
 		{
-			if (item.Invoice__c != null)
+			for (Invoice_Line_Item__c item : itemsList)
 			{
-				itemsWithInvoiceList.add(item);
-			}	
+				if (item.Invoice__c != null)
+				{
+					itemsWithInvoiceList.add(item);
+				}	
+			}
+		}
+		catch (NullPointerException e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
+		}
+		catch (SObjectException e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
+		}
+		catch (Exception e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
 		}
 		return itemsWithInvoiceList;
 	}
@@ -122,6 +163,7 @@ public with sharing class InvoiceLineItemUtils {
 	 * =======
 	 * v0.1 - 2021-06-25 - Initial version
 	 * v0.2 - 2021-06-26 - Method moved to InvoiceLineItemUtils
+	 * v0.3 - 2021-06-26 - Add exception handling
 	 */
 	public static Set<Id> getItemsWithoutChanges(
 		Map<Id, Invoice_Line_Item__c> oldItemsMap, 
@@ -132,18 +174,33 @@ public with sharing class InvoiceLineItemUtils {
 		Invoice_Line_Item__c	newItem;
 
 		itemsWithoutChanges = new Set<Id>();
-		for (Id id : newItemsMap.keyset())
+		try
 		{
-			if (oldItemsMap.containsKey(id) && newItemsMap.containsKey(id))
+			for (Id id : newItemsMap.keyset())
 			{
-				oldItem = oldItemsMap.get(id);
-				newItem = newItemsMap.get(id);
-
-				if (oldItem.Invoice__c == newItem.Invoice__c && oldItem.Amount__c == newItem.Amount__c)
+				if (oldItemsMap.containsKey(id) && newItemsMap.containsKey(id))
 				{
-					itemsWithoutChanges.add(id);
+					oldItem = oldItemsMap.get(id);
+					newItem = newItemsMap.get(id);
+	
+					if (oldItem.Invoice__c == newItem.Invoice__c && oldItem.Amount__c == newItem.Amount__c)
+					{
+						itemsWithoutChanges.add(id);
+					}
 				}
 			}
+		}
+		catch (NullPointerException e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
+		}
+		catch (SObjectException e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
+		}
+		catch (Exception e)
+		{
+			DebugUtils.printExceptionTypeAndMessage(e);
 		}
 		return itemsWithoutChanges;
 	}
