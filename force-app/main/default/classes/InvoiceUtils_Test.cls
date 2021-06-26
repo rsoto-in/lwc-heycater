@@ -158,50 +158,6 @@ private inherited sharing class InvoiceUtils_Test {
 	}
 
 	/**
-	 * @name: getILIsWithInvoiceTestPositive
-	 * @description: Test method with positive outcome
-	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
-	 * @param: N/A
-	 * @return: N/A
-	 * @history
-	 * =======
-	 * v0.1 - 2021-06-23 - Initial version
-	 */
-	@IsTest
-	static void getILIsWithInvoiceTestPositive()
-	{
-		User						user;
-		List<Invoice_Line_Item__c>	itemsList;
-		List<Invoice_Line_Item__c>	itemsWithInvoiceList;
-		String						query;
-
-		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
-		{
-			user = testUser;
-		}
-
-		itemsList = new List<Invoice_Line_Item__c>();
-		for (Invoice_Line_Item__c item : [SELECT Id, Invoice__c FROM Invoice_Line_Item__c LIMIT 50000])
-		{
-			itemsList.add(item);
-		}
-		itemsWithInvoiceList = new List<Invoice_Line_Item__c>();
-		Test.startTest();
-		System.runAs(user)
-		{
-			itemsWithInvoiceList.addAll(InvoiceUtils.getILIsWithInvoice(itemsList));
-		}
-		Test.stopTest();
-		query = SELECT_OPERATION + ' ';
-		query += COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME + ' ' + NOT_NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
-		System.assertEquals(Database.countQuery(query), itemsWithInvoiceList.size(), DIFFERENT_NUM_ILIS_W_INVOICE_MSG);
-	}
-
-	/**
 	 * @name: getInvoiceIdsSetTestPositive
 	 * @description: Test method with positive outcome
 	 * @author: Richard Soto - richardsoto@outlook.com

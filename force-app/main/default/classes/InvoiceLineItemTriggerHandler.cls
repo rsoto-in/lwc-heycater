@@ -56,7 +56,7 @@ public with sharing class InvoiceLineItemTriggerHandler {
 		Set<Id> 					amountILISInvoicesSet;
 
 		newItemsWithInvoiceList = new List<Invoice_Line_Item__c>();
-		newItemsWithInvoiceList.addAll(InvoiceUtils.getILIsWithInvoice(this.triggerNew));
+		newItemsWithInvoiceList.addAll(InvoiceLineItemUtils.getILIsWithInvoice(this.triggerNew));
 
 		if (!newItemsWithInvoiceList.isEmpty())
 		{
@@ -86,15 +86,15 @@ public with sharing class InvoiceLineItemTriggerHandler {
 		Set<Id> 						amountILISInvoicesSet;
 
 		newItemsWithInvoiceMap = new Map<Id, Invoice_Line_Item__c>();
-		newItemsWithInvoiceMap.putAll(InvoiceUtils.getILIsWithInvoice(this.triggerNew));
+		newItemsWithInvoiceMap.putAll(InvoiceLineItemUtils.getILIsWithInvoice(this.triggerNew));
 
 		oldItemsWithInvoiceMap = new Map<Id, Invoice_Line_Item__c>();
-		oldItemsWithInvoiceMap.putAll(InvoiceUtils.getILIsWithInvoice(this.triggerOld));
+		oldItemsWithInvoiceMap.putAll(InvoiceLineItemUtils.getILIsWithInvoice(this.triggerOld));
 
 		if (!newItemsWithInvoiceMap.isEmpty() || !oldItemsWithInvoiceMap.isEmpty())
 		{
 			itemsWithoutChanges = new Set<Id>();
-			itemsWithoutChanges.addAll(InvoiceUtils.getItemsWithoutChanges(oldItemsWithInvoiceMap, newItemsWithInvoiceMap));
+			itemsWithoutChanges.addAll(InvoiceLineItemUtils.getItemsWithoutChanges(oldItemsWithInvoiceMap, newItemsWithInvoiceMap));
 
 			for (Id id : itemsWithoutChanges)
 			{
@@ -128,7 +128,7 @@ public with sharing class InvoiceLineItemTriggerHandler {
 		Set<Id> 					amountILISInvoicesSet;
 
 		oldItemsWithInvoiceList = new List<Invoice_Line_Item__c>();
-		oldItemsWithInvoiceList.addAll(InvoiceUtils.getILIsWithInvoice(this.triggerOld));
+		oldItemsWithInvoiceList.addAll(InvoiceLineItemUtils.getILIsWithInvoice(this.triggerOld));
 		
 		if (!oldItemsWithInvoiceList.isEmpty())
 		{
