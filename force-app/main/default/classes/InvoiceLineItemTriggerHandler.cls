@@ -3,11 +3,12 @@
  * @description: Apex Trigger Handler class for Invoice_Line_Item__c trigger
  * @test: InvoiceLineItemTriggerHandler_Test
  * @author: Richard Soto - richardsoto@outlook.com
- * @version: 0.1
+ * @version: 0.2
  * @history
  * =======
  * v0.1 - 2021-06-21 - Initial version
  * v0.2 - 2021-06-23 - Add After Delete handler
+ * v0.3 - 2021-06-27 - Minor changes
  */
 public with sharing class InvoiceLineItemTriggerHandler {
 
@@ -42,23 +43,24 @@ public with sharing class InvoiceLineItemTriggerHandler {
 	 * @name: afterInsert
 	 * @description: After Insert method for Invoice_Line_Item__c trigger
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.2
 	 * @param: N/A
 	 * @return: N/A
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	public void afterInsert()
 	{
-		List<Invoice_Line_Item__c>	itemsWithInvoiceSet;
+		List<Invoice_Line_Item__c>	newItemsWithInvoiceList;
 		Set<Id> 					amountILISInvoicesSet;
 
-		itemsWithInvoiceSet = InvoiceUtils.getILIsWithInvoice(this.triggerNew);
-		if (itemsWithInvoiceSet != null && !itemsWithInvoiceSet.isEmpty())
+		newItemsWithInvoiceList = InvoiceLineItemUtils.getILIsWithInvoice(this.triggerNew);
+		if (!newItemsWithInvoiceList.isEmpty())
 		{
-			amountILISInvoicesSet = InvoiceUtils.getInvoiceIdsSet(itemsWithInvoiceSet);
-			InvoiceUtils.updateAmountILIs(amountILISInvoicesSet, itemsWithInvoiceSet);
+			amountILISInvoicesSet = InvoiceUtils.getInvoiceIdsSet(newItemsWithInvoiceList);
+			InvoiceUtils.updateAmountILIs(amountILISInvoicesSet, newItemsWithInvoiceList);
 		}
 	}
 
@@ -66,23 +68,37 @@ public with sharing class InvoiceLineItemTriggerHandler {
 	 * @name: afterUpdate
 	 * @description: After Update method for Invoice_Line_Item__c trigger
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.2
 	 * @param: N/A
 	 * @return: N/A
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	public void afterUpdate()
 	{
-		List<Invoice_Line_Item__c>	itemsWithInvoiceSet;
-		Set<Id> 					amountILISInvoicesSet;
+		Map<Id, Invoice_Line_Item__c>	newItemsWithInvoiceMap;
+		Map<Id, Invoice_Line_Item__c>	oldItemsWithInvoiceMap;
+		Set<Id>							itemsWithoutChanges;
+		Set<Id> 						amountILISInvoicesSet;
 
-		itemsWithInvoiceSet = InvoiceUtils.getILIsWithInvoice(this.triggerNew);
-		if (itemsWithInvoiceSet != null && !itemsWithInvoiceSet.isEmpty())
+		newItemsWithInvoiceMap = new Map<Id, Invoice_Line_Item__c>();
+		newItemsWithInvoiceMap.putAll(InvoiceLineItemUtils.getILIsWithInvoice(this.triggerNew));
+		oldItemsWithInvoiceMap = new Map<Id, Invoice_Line_Item__c>();
+		oldItemsWithInvoiceMap.putAll(InvoiceLineItemUtils.getILIsWithInvoice(this.triggerOld));
+		if (!newItemsWithInvoiceMap.isEmpty() || !oldItemsWithInvoiceMap.isEmpty())
 		{
-			amountILISInvoicesSet = InvoiceUtils.getInvoiceIdsSet(itemsWithInvoiceSet);
-			InvoiceUtils.updateAmountILIs(amountILISInvoicesSet, itemsWithInvoiceSet);
+			itemsWithoutChanges = InvoiceLineItemUtils.getItemsWithoutChanges(oldItemsWithInvoiceMap, newItemsWithInvoiceMap);
+			for (Id id : itemsWithoutChanges)
+			{
+				oldItemsWithInvoiceMap.remove(id);
+				newItemsWithInvoiceMap.remove(id);
+			}
+			amountILISInvoicesSet = new Set<Id>();
+			amountILISInvoicesSet.addAll(InvoiceUtils.getInvoiceIdsSet(newItemsWithInvoiceMap.values()));
+			amountILISInvoicesSet.addAll(InvoiceUtils.getInvoiceIdsSet(oldItemsWithInvoiceMap.values()));
+			InvoiceUtils.updateAmountILIs(amountILISInvoicesSet, newItemsWithInvoiceMap.values());
 		}
 	}
 
@@ -90,22 +106,23 @@ public with sharing class InvoiceLineItemTriggerHandler {
 	 * @name: afterDelete
 	 * @description: After Delete method for Invoice_Line_Item__c trigger
 	 * @author: Richard Soto - richardsoto@outlook.com
-	 * @version: 0.1
+	 * @version: 0.2
 	 * @param: N/A
 	 * @return: N/A
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-23 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	public void afterDelete() 
 	{
-		List<Invoice_Line_Item__c>	itemsWithInvoiceSet;
+		List<Invoice_Line_Item__c>	oldItemsWithInvoiceList;
 		Set<Id> 					amountILISInvoicesSet;
 
-		itemsWithInvoiceSet = InvoiceUtils.getILIsWithInvoice(this.triggerOld);
-		if (itemsWithInvoiceSet != null && !itemsWithInvoiceSet.isEmpty())
+		oldItemsWithInvoiceList = InvoiceLineItemUtils.getILIsWithInvoice(this.triggerOld);
+		if (!oldItemsWithInvoiceList.isEmpty())
 		{
-			amountILISInvoicesSet = InvoiceUtils.getInvoiceIdsSet(itemsWithInvoiceSet);
+			amountILISInvoicesSet = InvoiceUtils.getInvoiceIdsSet(oldItemsWithInvoiceList);
 			InvoiceUtils.updateAmountILIs(amountILISInvoicesSet, new List<Invoice_Line_Item__c>());
 		}
 	}

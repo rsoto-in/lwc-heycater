@@ -9,7 +9,7 @@
  * v0.1 - 2021-06-25 - Initial version
  */
 @isTest
-private inherited sharing class InvoiceLineItemsController_Test {
+private with sharing class InvoiceLineItemsController_Test {
 
 	private static final String	PROFILE_NAME_TEST = 'Standard User';
 	private static final String	PERMISSION_SET_NAME_TEST = 'SalesUser';
