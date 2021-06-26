@@ -22,6 +22,7 @@ public with sharing class InvoiceUtils {
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
 	 */
+	@TestVisible
 	private static void addItemToInvoiceMap(Map<Id, List<Invoice_Line_Item__c>> itemsByInvoiceMap, Invoice_Line_Item__c item)
 	{
 		List<Invoice_Line_Item__c> itemList;
@@ -57,6 +58,7 @@ public with sharing class InvoiceUtils {
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
 	 */
+	@TestVisible
 	private static Map<Id, List<Invoice_Line_Item__c>> getItemsByInvoiceMap(
 		Set<Id> invoiceIdsSet,
 		List<Invoice_Line_Item__c> itemsList)
@@ -93,13 +95,15 @@ public with sharing class InvoiceUtils {
 	 * =======
 	 * v0.1 - 2021-06-21 - Initial version
 	 */
-	public static List<Invoice__c> calculateAmountILIs(
+	@TestVisible
+	private static List<Invoice__c> calculateAmountILIs(
 		Set<Id> invoiceIdsSet, 
 		List<Invoice_Line_Item__c> itemsList)
 	{
 		List<Invoice__c>					invoicesList;
 		Map<Id, List<Invoice_Line_Item__c>>	itemsByInvoiceMap;
 		List<Invoice_Line_Item__c>			innerItemsList;
+        Double amount;
 
 		itemsByInvoiceMap = getItemsByInvoiceMap(invoiceIdsSet, itemsList);
 		invoicesList = new List<Invoice__c>();
@@ -111,7 +115,8 @@ public with sharing class InvoiceUtils {
 			{
 				for (Invoice_Line_Item__c item : innerItemsList)
 				{
-					invoice.Amount_Invoice_Line_Items__c += item.Amount__c;
+                    amount = item.Amount__c != null ? item.Amount__c : 0;
+					invoice.Amount_Invoice_Line_Items__c += amount;
 				}
 			}
 			invoicesList.add(invoice);
@@ -166,6 +171,42 @@ public with sharing class InvoiceUtils {
 			invoiceIdsSet.add(item.Invoice__c);
 		}
 		return invoiceIdsSet;
+	}
+
+	/**
+	 * @name: getItemsWithoutChanges
+	 * @description: Method for getting a set of ILIs Ids that don't have Invoice and Amount changes
+	 * @author: Richard Soto - richardsoto@outlook.com
+	 * @version: 0.1
+	 * @param: itemsList	List<Invoice_Line_Item__c>		List of Invoice Line Items with Invoices to get
+	 * @return: Set<Id>	Set of Invoice Ids
+	 * @history
+	 * =======
+	 * v0.1 - 2021-06-25 - Initial version
+	 */
+	public static Set<Id> getItemsWithoutChanges(
+		Map<Id, Invoice_Line_Item__c> oldItemsMap, 
+		Map<Id, Invoice_Line_Item__c> newItemsMap)
+	{
+		Set<Id>					itemsWithoutChanges;
+		Invoice_Line_Item__c	oldItem;
+		Invoice_Line_Item__c	newItem;
+
+		itemsWithoutChanges = new Set<Id>();
+		for (Id id : newItemsMap.keyset())
+		{
+			if (oldItemsMap.containsKey(id) && newItemsMap.containsKey(id))
+			{
+				oldItem = oldItemsMap.get(id);
+				newItem = newItemsMap.get(id);
+
+				if (oldItem.Invoice__c == newItem.Invoice__c && oldItem.Amount__c == newItem.Amount__c)
+				{
+					itemsWithoutChanges.add(id);
+				}
+			}
+		}
+		return itemsWithoutChanges;
 	}
 
 	/**
