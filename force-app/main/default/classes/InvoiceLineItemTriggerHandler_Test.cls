@@ -7,24 +7,13 @@
  * @history
  * =======
  * v0.1 - 2021-06-21 - Initial version
+ * v0.2 - 2021-06-27 - Minor changes
  */
-@isTest
+@IsTest
 private with sharing class InvoiceLineItemTriggerHandler_Test {
 
-	private static final String	PROFILE_NAME_TEST = 'Standard User';
-	private static final String	PERMISSION_SET_NAME_TEST = 'SalesUser';
-
-	private static final String INVOICE_LINE_ITEM_API_NAME = 'Invoice_Line_Item__c';
-	private static final String INVOICE_FIELD_API_NAME = 'Invoice__c';
 	private static final String INVOICE_NOT_UPDATED_MSG = 'Invoice\'s Amount Invoice Line Items has not been updated';
 	private static final String INVOICE_UPDATED_MSG = 'Invoice\'s Amount Invoice Line Items has been updated';
-
-	private static final String SELECT_OPERATION = 'SELECT';
-	private static final String FROM_TARGET = 'FROM';
-	private static final String WHERE_FILTER = 'WHERE';
-	private static final String NOT_NULL_FILTER = '!= NULL';
-	private static final String NULL_FILTER = '= NULL';
-	private static final String MAX_QUERY_LIMIT = 'LIMIT 50000';
 
 	/**
 	 * @name: setup
@@ -40,10 +29,10 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	@TestSetup
 	static void setup()
 	{		
-		User user = TestDataFactory.createUser(PROFILE_NAME_TEST);
+		User user = TestDataFactory.createUser(TestUtils.PROFILE_NAME_TEST);
 		if (user != null)
 		{
-			TestDataFactory.assignPermissionSet(PERMISSION_SET_NAME_TEST, user.Id);
+			TestDataFactory.assignPermissionSet(TestUtils.PERMISSION_SET_NAME_TEST, user.Id);
 		}
 		System.runAs(user){
 			TestDataFactory.createInvoicesAndILIs(7);
@@ -60,6 +49,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterInsertInvoiceChangeTest()
@@ -73,7 +63,6 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		Map<Id, Decimal> 					sumByInvoiceBeforeMap;
 		Map<Id, Decimal> 					sumByInvoiceAfterMap;
 		Decimal								sum;
-		Id									invoiceId;
 
 		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
 		{
@@ -81,17 +70,17 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		}
 
 		// Prepare SOQL query string with all Invoice Line Item fields 
-		itemType = Schema.getGlobalDescribe().get(INVOICE_LINE_ITEM_API_NAME);
+		itemType = Schema.getGlobalDescribe().get(TestUtils.INVOICE_LINE_ITEM_API_NAME);
 		itemFieldsMap = itemType.getDescribe().fields.getMap();
 		fields = '';
 		for (String field : itemFieldsMap.keySet())
 		{
 			fields += field + ',';
 		}
-		query = SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME +  ' ' + NOT_NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME +  ' ' + TestUtils.NOT_NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 
 		// Clone Invoice Line Items with Invoice lookup field value
 		itemsList = new List<Invoice_Line_Item__c>();
@@ -126,11 +115,9 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		{
 			if (sumByInvoiceAfterMap.containsKey(id))
 			{
-				invoiceId = id;
-				break;
+				System.assertNotEquals(sumByInvoiceBeforeMap.get(id), sumByInvoiceAfterMap.get(id), INVOICE_NOT_UPDATED_MSG);
 			}
 		}
-		System.assertNotEquals(sumByInvoiceBeforeMap.get(invoiceId), sumByInvoiceAfterMap.get(invoiceId), INVOICE_NOT_UPDATED_MSG);
 	}
 
 	/**
@@ -143,6 +130,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterInsertNoInvoiceChangeTest()
@@ -163,17 +151,17 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		}
 
 		// Prepare SOQL query string with all Invoice Line Item fields 
-		itemType = Schema.getGlobalDescribe().get(INVOICE_LINE_ITEM_API_NAME);
+		itemType = Schema.getGlobalDescribe().get(TestUtils.INVOICE_LINE_ITEM_API_NAME);
 		itemFieldsMap = itemType.getDescribe().fields.getMap();
 		fields = '';
 		for (String field : itemFieldsMap.keySet())
 		{
 			fields += field + ',';
 		}
-		query = SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME +  ' ' + NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME +  ' ' + TestUtils.NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 
 		// Clone Invoice Line Items with Invoice lookup field value
 		itemsList = new List<Invoice_Line_Item__c>();
@@ -230,6 +218,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterUpdateInvoiceChangeTest()
@@ -243,7 +232,6 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		Map<Id, Decimal> 					sumByInvoiceBeforeMap;
 		Map<Id, Decimal> 					sumByInvoiceAfterMap;
 		Decimal								sum;
-		Id									invoiceId;
 
 		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
 		{
@@ -251,17 +239,17 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		}
 
 		// Prepare SOQL query string with all Invoice Line Item fields 
-		itemType = Schema.getGlobalDescribe().get(INVOICE_LINE_ITEM_API_NAME);
+		itemType = Schema.getGlobalDescribe().get(TestUtils.INVOICE_LINE_ITEM_API_NAME);
 		itemFieldsMap = itemType.getDescribe().fields.getMap();
 		fields = '';
 		for (String field : itemFieldsMap.keySet())
 		{
 			fields += field + ',';
 		}
-		query = SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME +  ' ' + NOT_NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME +  ' ' + TestUtils.NOT_NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 
 		// Update Invoice Line Items' amounts
 		itemsList = new List<Invoice_Line_Item__c>();
@@ -296,11 +284,9 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		{
 			if (sumByInvoiceAfterMap.containsKey(id))
 			{
-				invoiceId = id;
-				break;
+				System.assertNotEquals(sumByInvoiceBeforeMap.get(id), sumByInvoiceAfterMap.get(id), INVOICE_NOT_UPDATED_MSG);
 			}
 		}
-		System.assertNotEquals(sumByInvoiceBeforeMap.get(invoiceId), sumByInvoiceAfterMap.get(invoiceId), INVOICE_NOT_UPDATED_MSG);
 	}
 
 	/**
@@ -313,6 +299,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterUpdateNoILIChangeTest()
@@ -333,17 +320,17 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		}
 
 		// Prepare SOQL query string with all Invoice Line Item fields 
-		itemType = Schema.getGlobalDescribe().get(INVOICE_LINE_ITEM_API_NAME);
+		itemType = Schema.getGlobalDescribe().get(TestUtils.INVOICE_LINE_ITEM_API_NAME);
 		itemFieldsMap = itemType.getDescribe().fields.getMap();
 		fields = '';
 		for (String field : itemFieldsMap.keySet())
 		{
 			fields += field + ',';
 		}
-		query = SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME +  ' ' + NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME +  ' ' + TestUtils.NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 
 		// Update Invoice Line Items' amounts
 		itemsList = new List<Invoice_Line_Item__c>();
@@ -400,6 +387,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterUpdateNoInvoiceChangeTest()
@@ -420,17 +408,17 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		}
 
 		// Prepare SOQL query string with all Invoice Line Item fields 
-		itemType = Schema.getGlobalDescribe().get(INVOICE_LINE_ITEM_API_NAME);
+		itemType = Schema.getGlobalDescribe().get(TestUtils.INVOICE_LINE_ITEM_API_NAME);
 		itemFieldsMap = itemType.getDescribe().fields.getMap();
 		fields = '';
 		for (String field : itemFieldsMap.keySet())
 		{
 			fields += field + ',';
 		}
-		query = SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME +  ' ' + NOT_NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME +  ' ' + TestUtils.NOT_NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 
 		// Update Invoice Line Items' amounts
 		itemsList = new List<Invoice_Line_Item__c>();
@@ -486,6 +474,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterDeleteInvoiceChangeTest()
@@ -499,7 +488,6 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		Map<Id, Decimal> 					sumByInvoiceBeforeMap;
 		Map<Id, Decimal> 					sumByInvoiceAfterMap;
 		Decimal								sum;
-		Id									invoiceId;
 
 		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
 		{
@@ -507,17 +495,17 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		}
 
 		// Prepare SOQL query string with all Invoice Line Item fields 
-		itemType = Schema.getGlobalDescribe().get(INVOICE_LINE_ITEM_API_NAME);
+		itemType = Schema.getGlobalDescribe().get(TestUtils.INVOICE_LINE_ITEM_API_NAME);
 		itemFieldsMap = itemType.getDescribe().fields.getMap();
 		fields = '';
 		for (String field : itemFieldsMap.keySet())
 		{
 			fields += field + ',';
 		}
-		query = SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME +  ' ' + NOT_NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME +  ' ' + TestUtils.NOT_NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 
 		itemsList = new List<Invoice_Line_Item__c>();
 		for (Invoice_Line_Item__c item : Database.query(query))
@@ -550,11 +538,9 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		{
 			if (sumByInvoiceAfterMap.containsKey(id))
 			{
-				invoiceId = id;
-				break;
+				System.assertNotEquals(sumByInvoiceBeforeMap.get(id), sumByInvoiceAfterMap.get(id), INVOICE_NOT_UPDATED_MSG);
 			}
 		}
-		System.assertNotEquals(sumByInvoiceBeforeMap.get(invoiceId), sumByInvoiceAfterMap.get(invoiceId), INVOICE_NOT_UPDATED_MSG);
 	}
 
 	/**
@@ -567,6 +553,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterDeleteNoInvoiceChangeTest()
@@ -587,17 +574,17 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		}
 
 		// Prepare SOQL query string with all Invoice Line Item fields 
-		itemType = Schema.getGlobalDescribe().get(INVOICE_LINE_ITEM_API_NAME);
+		itemType = Schema.getGlobalDescribe().get(TestUtils.INVOICE_LINE_ITEM_API_NAME);
 		itemFieldsMap = itemType.getDescribe().fields.getMap();
 		fields = '';
 		for (String field : itemFieldsMap.keySet())
 		{
 			fields += field + ',';
 		}
-		query = SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME +  ' ' + NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME +  ' ' + TestUtils.NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 
 		itemsList = new List<Invoice_Line_Item__c>();
 		for (Invoice_Line_Item__c item : Database.query(query))

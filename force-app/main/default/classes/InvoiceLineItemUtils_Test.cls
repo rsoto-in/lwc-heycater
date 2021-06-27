@@ -7,16 +7,11 @@
  * @history
  * =======
  * v0.1 - 2021-06-26 - Initial version
+ * v0.2 - 2021-06-27 - Minor changes
  */
-@isTest
-private with sharing class InvoiceLineItemUtils_Test
-{
-	private static final String	PROFILE_NAME_TEST = 'Standard User';
-	private static final String	PERMISSION_SET_NAME_TEST = 'SalesUser';
-
-	private static final String INVOICE_LINE_ITEM_API_NAME = 'Invoice_Line_Item__c';
-	private static final String INVOICE_FIELD_API_NAME = 'Invoice__c';
-
+@IsTest
+private with sharing class InvoiceLineItemUtils_Test {
+	
 	private static final String ILI_LIST_INVOICE_MAP_NULL_MSG = 'Invoice Line Item List by Invoice Map has to be NULL';
 	private static final String ILI_LIST_INVOICE_MAP_NOT_NULL_MSG = 'Invoice Line Item List by Invoice Map cannot be NULL';
 	private static final String INVOICE_LINE_ITEM_NULL_MSG = 'Invoice Line Item has to be NULL';
@@ -48,15 +43,7 @@ private with sharing class InvoiceLineItemUtils_Test
 	private static final String OLD_ITEMS_MAP_NOT_NULL_MSG = 'Map of old Invoice Line Items cannot be NULL';
 	private static final String ITEMS_WO_CHANGES_SET_SIZE_1_MSG = 'Size of changed Invoice Line Items set has to be 1';
 
-	private static final String SELECT_OPERATION = 'SELECT';
-	private static final String COUNT_AGGREGATE_FUNCTION_OPERATION = 'COUNT()';
-	private static final String FROM_TARGET = 'FROM';
-	private static final String WHERE_FILTER = 'WHERE';
-	private static final String NOT_NULL_FILTER = '!= NULL';
-	private static final String NULL_FILTER = '= NULL';
-	private static final String IN_FILTER = 'IN';
 	private static final String INVOICE_IDS_SET = 'invoiceIdsSet';
-	private static final String MAX_QUERY_LIMIT = 'LIMIT 50000';
 
 	/**
 	 * @name: setup
@@ -72,10 +59,10 @@ private with sharing class InvoiceLineItemUtils_Test
 	@TestSetup
 	static void setup()
 	{
-		User user = TestDataFactory.createUser(PROFILE_NAME_TEST);
+		User user = TestDataFactory.createUser(TestUtils.PROFILE_NAME_TEST);
 		if (user != null)
 		{
-			TestDataFactory.assignPermissionSet(PERMISSION_SET_NAME_TEST, user.Id);
+			TestDataFactory.assignPermissionSet(TestUtils.PERMISSION_SET_NAME_TEST, user.Id);
 		}
 		System.runAs(user)
 		{
@@ -504,10 +491,10 @@ private with sharing class InvoiceLineItemUtils_Test
 			itemsByInvoiceMap = InvoiceLineItemUtils.getItemsByInvoiceMap(invoiceIdsSet, itemsList);
 		}
 		Test.stopTest();
-		query = SELECT_OPERATION + ' ' + COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME + ' ' + IN_FILTER + ':' + INVOICE_IDS_SET + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + TestUtils.COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME + ' ' + TestUtils.IN_FILTER + ':' + INVOICE_IDS_SET + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 		System.assertNotEquals(null, itemsByInvoiceMap, ITEM_BY_INVOICE_MAP_NOT_NULL_MSG);
 		if (itemsByInvoiceMap != null)
 		{
@@ -678,11 +665,11 @@ private with sharing class InvoiceLineItemUtils_Test
 			itemsWithInvoiceList.addAll(InvoiceLineItemUtils.getILIsWithInvoice(itemsList));
 		}
 		Test.stopTest();
-		query = SELECT_OPERATION + ' ';
-		query += COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME + ' ' + NOT_NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ';
+		query += TestUtils.COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME + ' ' + TestUtils.NOT_NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 		System.assertEquals(Database.countQuery(query), itemsWithInvoiceList.size(), DIFFERENT_NUM_ILIS_W_INVOICE_MSG);
 	}
 

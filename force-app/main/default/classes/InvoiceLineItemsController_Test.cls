@@ -7,28 +7,14 @@
  * @history
  * =======
  * v0.1 - 2021-06-25 - Initial version
+ * v0.2 - 2021-06-27 - Minor changes
  */
-@isTest
+@IsTest
 private with sharing class InvoiceLineItemsController_Test {
 
-	private static final String	PROFILE_NAME_TEST = 'Standard User';
-	private static final String	PERMISSION_SET_NAME_TEST = 'SalesUser';
-
-	private static final String INVOICE_DATA_TEST = 'TestInvoices';
-
-	private static final String INVOICE_LINE_ITEM_API_NAME = 'Invoice_Line_Item__c';
-	private static final String INVOICE_FIELD_API_NAME = 'Invoice__c';
 	private static final String DIFFERENT_NUM_ILIS_W_INVOICE_ID_MSG = 'The number of Invoice Line Items with Invoice Id retrieved is not correct';
 	private static final String DIFFERENT_NUM_ILIS_WO_INVOICE_ID_MSG = 'The number of Invoice Line Items with Invoice Id retrieved is not correct. It has to be zero.';
 	private static final String DIFFERENT_NUM_ILIS_W_NULL_INVOICE_ID_MSG = 'The number of Invoice Line Items with null Invoice Id retrieved is not correct. It has to be zero';
-
-	private static final String SELECT_OPERATION = 'SELECT';
-	private static final String COUNT_AGGREGATE_FUNCTION_OPERATION = 'COUNT()';
-	private static final String FROM_TARGET = 'FROM';
-	private static final String WHERE_FILTER = 'WHERE';
-	private static final String EQUAL_FILTER = '=';
-	private static final String NULL_FILTER = '= NULL';
-	private static final String MAX_QUERY_LIMIT = 'LIMIT 50000';
 
 	/**
 	 * @name: setup
@@ -44,10 +30,10 @@ private with sharing class InvoiceLineItemsController_Test {
 	@TestSetup
 	static void setup()
 	{
-		User user = TestDataFactory.createUser(PROFILE_NAME_TEST);
+		User user = TestDataFactory.createUser(TestUtils.PROFILE_NAME_TEST);
 		if (user != null)
 		{
-			TestDataFactory.assignPermissionSet(PERMISSION_SET_NAME_TEST, user.Id);
+			TestDataFactory.assignPermissionSet(TestUtils.PERMISSION_SET_NAME_TEST, user.Id);
 		}
 		System.runAs(user)
 		{
@@ -89,11 +75,11 @@ private with sharing class InvoiceLineItemsController_Test {
 			itemsList.addAll(InvoiceLineItemsController.getInvoiceLineItems(invoiceId));
 		}
 		Test.stopTest();
-		query = SELECT_OPERATION + ' ' + COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME + ' ';
-		query += EQUAL_FILTER + ' ' + '\'' + invoiceId + '\'' + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + TestUtils.COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME + ' ';
+		query += TestUtils.EQUAL_FILTER + ' ' + '\'' + invoiceId + '\'' + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 		System.assertEquals(Database.countQuery(query), itemsList.size(), DIFFERENT_NUM_ILIS_W_INVOICE_ID_MSG);
 	}
 
@@ -123,7 +109,7 @@ private with sharing class InvoiceLineItemsController_Test {
 		}
 		
 		invoicesList = new List<Invoice__c>();
-		invoicesList.addAll((List<Invoice__c>) Test.loadData(Invoice__c.sObjectType, INVOICE_DATA_TEST));
+		invoicesList.addAll((List<Invoice__c>) Test.loadData(Invoice__c.sObjectType, TestUtils.INVOICE_DATA_TEST));
 		for (Invoice__c invoice : invoicesList)
 		{
 			invoiceId = invoice.Id;
@@ -135,11 +121,11 @@ private with sharing class InvoiceLineItemsController_Test {
 			itemsList.addAll(InvoiceLineItemsController.getInvoiceLineItems(invoiceId));
 		}
 		Test.stopTest();
-		query = SELECT_OPERATION + ' ' + COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME + ' ';
-		query += EQUAL_FILTER + ' ' + '\'' + invoiceId + '\'' + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + TestUtils.COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME + ' ';
+		query += TestUtils.EQUAL_FILTER + ' ' + '\'' + invoiceId + '\'' + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 		System.assertEquals(Database.countQuery(query), itemsList.size(), DIFFERENT_NUM_ILIS_WO_INVOICE_ID_MSG);
 	}
 
@@ -173,10 +159,10 @@ private with sharing class InvoiceLineItemsController_Test {
 			itemsList = InvoiceLineItemsController.getInvoiceLineItems(invoiceId);
 		}
 		Test.stopTest();
-		query = SELECT_OPERATION + ' ' + COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME + ' ' + NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + TestUtils.COUNT_AGGREGATE_FUNCTION_OPERATION + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME + ' ' + TestUtils.NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 		System.assertEquals(Database.countQuery(query), itemsList.size(), DIFFERENT_NUM_ILIS_W_NULL_INVOICE_ID_MSG);
 	}
 

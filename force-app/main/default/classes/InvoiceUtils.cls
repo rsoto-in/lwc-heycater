@@ -31,20 +31,24 @@ public with sharing class InvoiceUtils {
 		List<Invoice__c>					invoicesList;
 		Map<Id, List<Invoice_Line_Item__c>>	itemsByInvoiceMap;
 		List<Invoice_Line_Item__c>			innerItemsList;
-		Double amount;
+		Double								amount;
 
 		invoicesList = new List<Invoice__c>();
 		try 
 		{
 			if (!invoiceIdsSet.isEmpty())
 			{
+				// Link Invoice Id with a its related Invoice Line Items
 				itemsByInvoiceMap = InvoiceLineItemUtils.getItemsByInvoiceMap(invoiceIdsSet, itemsList);
+				// Retrieve all Invoices to be updated
 				for (Invoice__c invoice : [SELECT Id, Amount_Invoice_Line_Items__c FROM Invoice__c WHERE Id IN :invoiceIdsSet])
 				{
 					invoice.Amount_Invoice_Line_Items__c = 0;
+					// Get all related Invoice Line Items for each invoice
 					innerItemsList = itemsByInvoiceMap.get(invoice.Id);
 					if (innerItemsList != null)
 					{
+						// Sum amounts of all related Invoice Line Items
 						for (Invoice_Line_Item__c item : innerItemsList)
 						{
 							amount = item.Amount__c != null ? item.Amount__c : 0;
@@ -81,6 +85,7 @@ public with sharing class InvoiceUtils {
 		invoiceIdsSet = new Set<Id>();
 		try
 		{
+			// Retrieve all unique Invoice lookup field values
 			for (Invoice_Line_Item__c item : itemsList)
 			{
 				invoiceIdsSet.add(item.Invoice__c);
@@ -119,9 +124,11 @@ public with sharing class InvoiceUtils {
 	{
 		List<Invoice__c>	invoicesList;
 
+		// Calculate Invoices' Amount Invoice Line Items values
 		invoicesList = calculateAmountILIs(invoiceIdsSet, itemsList);
 		try
 		{
+			// Update Invoices
 			if (!invoicesList.isEmpty())
 			{
 				update invoicesList;

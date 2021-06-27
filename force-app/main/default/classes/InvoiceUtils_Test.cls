@@ -7,15 +7,11 @@
  * @history
  * =======
  * v0.1 - 2021-06-21 - Initial version
+ * v0.2 - 2021-06-27 - Minor changes
  */
-@isTest
+@IsTest
 private with sharing class InvoiceUtils_Test {
 
-	private static final String	PROFILE_NAME_TEST = 'Standard User';
-	private static final String	PERMISSION_SET_NAME_TEST = 'SalesUser';
-
-	private static final String INVOICE_LINE_ITEM_API_NAME = 'Invoice_Line_Item__c';
-	private static final String INVOICE_FIELD_API_NAME = 'Invoice__c';
 	private static final String INVOICE_NOT_CALCULATED_MSG = 'Invoice\'s Amount Invoice Line Items has not been calculated';
 	private static final String INVOICE_NOT_UPDATE_MSG = 'Invoice\'s Amount Invoice Line Items has not been updated';
 	private static final String DIFFERENT_NUM_ILIS_W_INVOICE_MSG = 'The number of Invoice Line Items with Invoice retrieved is not correct';
@@ -31,15 +27,6 @@ private with sharing class InvoiceUtils_Test {
 	private static final String INVOICE_INCORRECT_UPDATE_MSG = 'Invoice has been updated incorrectly';
 	private static final String INVOICE_IDS_SET_NOT_NULL_MSG = 'Set of Invoice Ids cannot be NULL';
 
-	private static final String SELECT_OPERATION = 'SELECT';
-	private static final String COUNT_AGGREGATE_FUNCTION_OPERATION = 'COUNT()';
-	private static final String FROM_TARGET = 'FROM';
-	private static final String WHERE_FILTER = 'WHERE';
-	private static final String NOT_NULL_FILTER = '!= NULL';
-	private static final String NULL_FILTER = '= NULL';
-	private static final String QUERY_LIMIT_1 = 'LIMIT 1';
-	private static final String MAX_QUERY_LIMIT = 'LIMIT 50000';
-
 	/**
 	 * @name: setup
 	 * @description: Setup method for testing
@@ -54,10 +41,10 @@ private with sharing class InvoiceUtils_Test {
 	@TestSetup
 	static void setup()
 	{
-		User user = TestDataFactory.createUser(PROFILE_NAME_TEST);
+		User user = TestDataFactory.createUser(TestUtils.PROFILE_NAME_TEST);
 		if (user != null)
 		{
-			TestDataFactory.assignPermissionSet(PERMISSION_SET_NAME_TEST, user.Id);
+			TestDataFactory.assignPermissionSet(TestUtils.PERMISSION_SET_NAME_TEST, user.Id);
 		}
 		System.runAs(user)
 		{
@@ -250,17 +237,17 @@ private with sharing class InvoiceUtils_Test {
 		}
 
 		// Prepare SOQL query string with all Invoice Line Item fields 
-		itemType = Schema.getGlobalDescribe().get(INVOICE_LINE_ITEM_API_NAME);
+		itemType = Schema.getGlobalDescribe().get(TestUtils.INVOICE_LINE_ITEM_API_NAME);
 		itemFieldsMap = itemType.getDescribe().fields.getMap();
 		fields = '';
 		for (String field : itemFieldsMap.keySet())
 		{
 			fields += field + ',';
 		}
-		query = SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME +  ' ' + NOT_NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME +  ' ' + TestUtils.NOT_NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 
 		// Clone Invoice Line Items with Invoice lookup field value
 		// Calculate Invoice amounts for test assertion (manual) (with original records)
@@ -666,17 +653,17 @@ private with sharing class InvoiceUtils_Test {
 		}
 
 		// Prepare SOQL query string with all Invoice Line Item fields 
-		itemType = Schema.getGlobalDescribe().get(INVOICE_LINE_ITEM_API_NAME);
+		itemType = Schema.getGlobalDescribe().get(TestUtils.INVOICE_LINE_ITEM_API_NAME);
 		itemFieldsMap = itemType.getDescribe().fields.getMap();
 		fields = '';
 		for (String field : itemFieldsMap.keySet())
 		{
 			fields += field + ',';
 		}
-		query = SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
-		query += FROM_TARGET + ' ' + INVOICE_LINE_ITEM_API_NAME + ' ';
-		query += WHERE_FILTER + ' ' + INVOICE_FIELD_API_NAME +  ' ' + NOT_NULL_FILTER + ' ';
-		query += MAX_QUERY_LIMIT;
+		query = TestUtils.SELECT_OPERATION + ' ' + fields.removeEnd(',') + ' ';
+		query += TestUtils.FROM_TARGET + ' ' + TestUtils.INVOICE_LINE_ITEM_API_NAME + ' ';
+		query += TestUtils.WHERE_FILTER + ' ' + TestUtils.INVOICE_FIELD_API_NAME +  ' ' + TestUtils.NOT_NULL_FILTER + ' ';
+		query += TestUtils.MAX_QUERY_LIMIT;
 
 		// Clone Invoice Line Items with Invoice lookup field value
 		// Calculate Invoice amounts for test assertion (manual) (with original records)

@@ -56,10 +56,13 @@ public with sharing class InvoiceLineItemTriggerHandler {
 		List<Invoice_Line_Item__c>	newItemsWithInvoiceList;
 		Set<Id> 					amountILISInvoicesSet;
 
+		// Use ONLY new Invoice Line Items with Invoice lookup field value
 		newItemsWithInvoiceList = InvoiceLineItemUtils.getILIsWithInvoice(this.triggerNew);
 		if (!newItemsWithInvoiceList.isEmpty())
 		{
+			// Create a set of Invoice Ids to be updated
 			amountILISInvoicesSet = InvoiceUtils.getInvoiceIdsSet(newItemsWithInvoiceList);
+			// Update Invoices' Amount Invoice Line Items
 			InvoiceUtils.updateAmountILIs(amountILISInvoicesSet, newItemsWithInvoiceList);
 		}
 	}
@@ -83,21 +86,26 @@ public with sharing class InvoiceLineItemTriggerHandler {
 		Set<Id>							itemsWithoutChanges;
 		Set<Id> 						amountILISInvoicesSet;
 
+		// Use ONLY new Invoice Line Items with Invoice lookup field value
 		newItemsWithInvoiceMap = new Map<Id, Invoice_Line_Item__c>();
 		newItemsWithInvoiceMap.putAll(InvoiceLineItemUtils.getILIsWithInvoice(this.triggerNew));
+		// Use ONLY old Invoice Line Items with Invoice lookup field value (for Invoice lookup field value changes)
 		oldItemsWithInvoiceMap = new Map<Id, Invoice_Line_Item__c>();
 		oldItemsWithInvoiceMap.putAll(InvoiceLineItemUtils.getILIsWithInvoice(this.triggerOld));
 		if (!newItemsWithInvoiceMap.isEmpty() || !oldItemsWithInvoiceMap.isEmpty())
 		{
+			// Use ONLY Invoice Line Items with Amount field value or Invoice lookup field value changes
 			itemsWithoutChanges = InvoiceLineItemUtils.getItemsWithoutChanges(oldItemsWithInvoiceMap, newItemsWithInvoiceMap);
 			for (Id id : itemsWithoutChanges)
 			{
 				oldItemsWithInvoiceMap.remove(id);
 				newItemsWithInvoiceMap.remove(id);
 			}
+			// Create a set of Invoice Ids to be updated
 			amountILISInvoicesSet = new Set<Id>();
 			amountILISInvoicesSet.addAll(InvoiceUtils.getInvoiceIdsSet(newItemsWithInvoiceMap.values()));
 			amountILISInvoicesSet.addAll(InvoiceUtils.getInvoiceIdsSet(oldItemsWithInvoiceMap.values()));
+			// Update Invoices' Amount Invoice Line Items
 			InvoiceUtils.updateAmountILIs(amountILISInvoicesSet, newItemsWithInvoiceMap.values());
 		}
 	}
@@ -119,10 +127,13 @@ public with sharing class InvoiceLineItemTriggerHandler {
 		List<Invoice_Line_Item__c>	oldItemsWithInvoiceList;
 		Set<Id> 					amountILISInvoicesSet;
 
+		// Use ONLY old Invoice Line Items with Invoice lookup field value
 		oldItemsWithInvoiceList = InvoiceLineItemUtils.getILIsWithInvoice(this.triggerOld);
 		if (!oldItemsWithInvoiceList.isEmpty())
 		{
+			// Create a set of Invoice Ids to be updated
 			amountILISInvoicesSet = InvoiceUtils.getInvoiceIdsSet(oldItemsWithInvoiceList);
+			// Update Invoices' Amount Invoice Line Items
 			InvoiceUtils.updateAmountILIs(amountILISInvoicesSet, new List<Invoice_Line_Item__c>());
 		}
 	}

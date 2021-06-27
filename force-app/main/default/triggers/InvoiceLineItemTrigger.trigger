@@ -2,11 +2,11 @@
  * @name: InvoiceLineItemTrigger
  * @description: Trigger for Invoice_Line_Item__c object
  * @author: Richard Soto - richardsoto@outlook.com
- * @version: 0.1
+ * @version: 0.2
  * @history
  * =======
  * v0.1 - 2021-06-21 - Initial version
- * v0.2 - 2021-06-21 - Add After Delete functionality
+ * v0.2 - 2021-06-23 - Add After Delete functionality
  */
 trigger InvoiceLineItemTrigger on Invoice_Line_Item__c (
 	after insert,

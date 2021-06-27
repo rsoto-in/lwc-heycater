@@ -31,13 +31,16 @@ public with sharing class InvoiceLineItemUtils {
 
 		try
 		{
+			// Check for existing Invoice Id key
 			if (!itemsByInvoiceMap.isEmpty() && itemsByInvoiceMap.containsKey(item.Invoice__c))
 			{
+				// Use existing List of Invoice Line Items using Invoice Id key
 				itemList = itemsByInvoiceMap.get(item.Invoice__c);
 				itemList.add(item);
 			}
 			else
 			{
+				// Create new List of Invoice Line Item to add it to the map using Invoice Id as key
 				itemList = new List<Invoice_Line_Item__c>();
 				itemList.add(item);
 				itemsByInvoiceMap.put(item.Invoice__c, itemList);
@@ -82,12 +85,13 @@ public with sharing class InvoiceLineItemUtils {
 		itemsByInvoiceMap = new Map<Id, List<Invoice_Line_Item__c>>();
 		try
 		{
-			// Get all related InvoiceLineItems
+			// Get new/updated Invoice Line Items
 			for (Invoice_Line_Item__c item : itemsList)
 			{
 				itemIdsSet.add(item.Id);
 				addItemToInvoiceMap(itemsByInvoiceMap, item);
 			}
+			// Get all existing Invoices' related Invoice Line Items
 			if (!invoiceIdsSet.isEmpty())
 			{
 				for (Invoice_Line_Item__c item : [SELECT Id, Invoice__c, Amount__c FROM Invoice_Line_Item__c 
@@ -129,12 +133,13 @@ public with sharing class InvoiceLineItemUtils {
 		itemsWithInvoiceList = new List<Invoice_Line_Item__c>();
 		try
 		{
+			// Filter Invoice Line Items using its Invoice lookup field value
 			for (Invoice_Line_Item__c item : itemsList)
 			{
 				if (item.Invoice__c != null)
 				{
 					itemsWithInvoiceList.add(item);
-				}	
+				}
 			}
 		}
 		catch (NullPointerException e)
@@ -176,10 +181,12 @@ public with sharing class InvoiceLineItemUtils {
 		itemsWithoutChanges = new Set<Id>();
 		try
 		{
+			// Identifiy all Invoice Line Items without impactful changes
 			for (Id id : newItemsMap.keyset())
 			{
 				if (oldItemsMap.containsKey(id) && newItemsMap.containsKey(id))
 				{
+					// Compare old and new values for Amount and Invoice lookup fields
 					oldItem = oldItemsMap.get(id);
 					newItem = newItemsMap.get(id);
 	
