@@ -88,7 +88,7 @@ public with sharing class InvoiceLineItemUtils {
 				itemIdsSet.add(item.Id);
 				addItemToInvoiceMap(itemsByInvoiceMap, item);
 			}
-			if (!invoiceIdsSet.isEmpty() && !itemIdsSet.isEmpty())
+			if (!invoiceIdsSet.isEmpty())
 			{
 				for (Invoice_Line_Item__c item : [SELECT Id, Invoice__c, Amount__c FROM Invoice_Line_Item__c 
 													WHERE Invoice__c IN :invoiceIdsSet 
