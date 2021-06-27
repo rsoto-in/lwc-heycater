@@ -181,15 +181,15 @@ private with sharing class InvoiceLineItemsController_Test {
 	}
 
 	/**
-	 * @name: getInvoiceLineItemsNullTest
-	 * @description: Test getInvoiceLineItems method with null outcome
+	 * @name: getInvoiceLineItemsInvalidIdTest
+	 * @description: Test getInvoiceLineItems method with invalid Id
 	 * @author: Richard Soto - richardsoto@outlook.com
 	 * @version: 0.1
 	 * @param: N/A
 	 * @return: N/A
 	 * @history
 	 * =======
-	 * v0.1 - 2021-06-25 - Initial version
+	 * v0.1 - 2021-06-27 - Initial version
 	 */
 	@IsTest
 	static void getInvoiceLineItemsInvalidIdTest()
