@@ -8,7 +8,7 @@
         <apexClass>InvoiceLineItemsController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Permission Set for Sales Users</description>
+    <description>Permission Set for Test Assignment users</description>
     <fieldPermissions>
         <editable>true</editable>
         <field>Invoice_Line_Item__c.Amount__c</field>
@@ -25,7 +25,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Sales User</label>
+    <label>Test Assignment User</label>
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>true</allowDelete>

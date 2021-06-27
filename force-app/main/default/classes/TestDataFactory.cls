@@ -6,8 +6,9 @@
  * @history
  * =======
  * v0.1 - 2021-06-21 - Initial version
+ * v0.2 - 2021-06-27 - Minor changes
  */
-@isTest
+@IsTest
 public with sharing class TestDataFactory {
 
 	public static final String 	USERNAME_TEST = 'sales@example.test';
@@ -21,8 +22,6 @@ public with sharing class TestDataFactory {
 	private static final String LOCALE_SID_KEY_TEST = 'en_US';
 	private static final String EMAIL_ENCODING_KEY_TEST = 'UTF-8';
 	private static final String LANGUAGE_LOCALE_KEY_TEST = 'en_US';
-	private static final String INVOICE_DATA_TEST = 'TestInvoices';
-	private static final String	INVOICE_LINE_ITEM_DATA_TEST = 'TestInvoiceLineItems';
 
 	/**
 	 * @name: createUser
@@ -109,7 +108,7 @@ public with sharing class TestDataFactory {
 	 */
 	public static List<SObject> loadInvoices()
 	{
-		return Test.loadData(Invoice__c.sObjectType, INVOICE_DATA_TEST);
+		return Test.loadData(Invoice__c.sObjectType, TestUtils.INVOICE_DATA_TEST);
 	}
 
 	/**
@@ -125,7 +124,7 @@ public with sharing class TestDataFactory {
 	 */
 	public static List<SObject> loadInvoiceLineItems()
 	{
-		return Test.loadData(Invoice_Line_Item__c.sObjectType, INVOICE_LINE_ITEM_DATA_TEST);
+		return Test.loadData(Invoice_Line_Item__c.sObjectType, TestUtils.INVOICE_LINE_ITEM_DATA_TEST);
 	}
 
 	/**
