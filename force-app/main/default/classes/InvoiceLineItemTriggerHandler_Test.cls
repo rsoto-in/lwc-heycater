@@ -49,6 +49,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterInsertInvoiceChangeTest()
@@ -62,7 +63,6 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		Map<Id, Decimal> 					sumByInvoiceBeforeMap;
 		Map<Id, Decimal> 					sumByInvoiceAfterMap;
 		Decimal								sum;
-		Id									invoiceId;
 
 		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
 		{
@@ -115,11 +115,9 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		{
 			if (sumByInvoiceAfterMap.containsKey(id))
 			{
-				invoiceId = id;
-				break;
+				System.assertNotEquals(sumByInvoiceBeforeMap.get(id), sumByInvoiceAfterMap.get(id), INVOICE_NOT_UPDATED_MSG);
 			}
 		}
-		System.assertNotEquals(sumByInvoiceBeforeMap.get(invoiceId), sumByInvoiceAfterMap.get(invoiceId), INVOICE_NOT_UPDATED_MSG);
 	}
 
 	/**
@@ -132,6 +130,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterInsertNoInvoiceChangeTest()
@@ -219,6 +218,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterUpdateInvoiceChangeTest()
@@ -232,7 +232,6 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		Map<Id, Decimal> 					sumByInvoiceBeforeMap;
 		Map<Id, Decimal> 					sumByInvoiceAfterMap;
 		Decimal								sum;
-		Id									invoiceId;
 
 		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
 		{
@@ -285,11 +284,9 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		{
 			if (sumByInvoiceAfterMap.containsKey(id))
 			{
-				invoiceId = id;
-				break;
+				System.assertNotEquals(sumByInvoiceBeforeMap.get(id), sumByInvoiceAfterMap.get(id), INVOICE_NOT_UPDATED_MSG);
 			}
 		}
-		System.assertNotEquals(sumByInvoiceBeforeMap.get(invoiceId), sumByInvoiceAfterMap.get(invoiceId), INVOICE_NOT_UPDATED_MSG);
 	}
 
 	/**
@@ -302,6 +299,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterUpdateNoILIChangeTest()
@@ -389,6 +387,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterUpdateNoInvoiceChangeTest()
@@ -475,6 +474,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterDeleteInvoiceChangeTest()
@@ -488,7 +488,6 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		Map<Id, Decimal> 					sumByInvoiceBeforeMap;
 		Map<Id, Decimal> 					sumByInvoiceAfterMap;
 		Decimal								sum;
-		Id									invoiceId;
 
 		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
 		{
@@ -539,11 +538,9 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 		{
 			if (sumByInvoiceAfterMap.containsKey(id))
 			{
-				invoiceId = id;
-				break;
+				System.assertNotEquals(sumByInvoiceBeforeMap.get(id), sumByInvoiceAfterMap.get(id), INVOICE_NOT_UPDATED_MSG);
 			}
 		}
-		System.assertNotEquals(sumByInvoiceBeforeMap.get(invoiceId), sumByInvoiceAfterMap.get(invoiceId), INVOICE_NOT_UPDATED_MSG);
 	}
 
 	/**
@@ -556,6 +553,7 @@ private with sharing class InvoiceLineItemTriggerHandler_Test {
 	 * @history
 	 * =======
 	 * v0.1 - 2021-06-22 - Initial version
+	 * v0.2 - 2021-06-27 - Minor changes
 	 */
 	@IsTest
 	static void afterDeleteNoInvoiceChangeTest()

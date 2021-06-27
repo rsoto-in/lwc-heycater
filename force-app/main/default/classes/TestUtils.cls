@@ -8,6 +8,7 @@
  * =======
  * v0.1 - 2021-06-27 - Initial version
  */
+@IsTest
 public with sharing class TestUtils {
 	
 	public static final String	PROFILE_NAME_TEST = 'Standard User';
