@@ -1,6 +1,6 @@
 # heycater! LWC project
 
-A heycater! project using Apex, JavaScript and Lightning Web Component (LWC) developed on the Salesforce Platform.
+A heycater! project developed on the Salesforce Platform using Apex, JavaScript and Lightning Web Components (LWC).
 
 ## Table of contents
 
