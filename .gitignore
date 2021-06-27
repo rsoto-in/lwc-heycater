@@ -12,7 +12,7 @@
 coverage/
 
 # Manifest
-manifest/% 
+manifest/
 package.xml
 
 # LWC configuration files
