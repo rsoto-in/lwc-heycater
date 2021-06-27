@@ -1,6 +1,6 @@
 # heycater! LWC project
 
-A heycater! project using Lightning Web Component (LWC) on Salesforce Platform.
+A heycater! project using Apex, JavaScript and Lightning Web Component (LWC) developed on the Salesforce Platform.
 
 ## Table of contents
 
@@ -10,7 +10,7 @@ A heycater! project using Lightning Web Component (LWC) on Salesforce Platform.
 
 ## Requirements
 
-This project is based on two custom objects: Invoice and Invoice Line Item (ILI):
+This project is based on two custom objects, Invoice and Invoice Line Item (ILI):
 
 - Each ILI has a lookup relationship to an Invoice, and a currency field: Amount.
 - Each Invoice has a currency field: Amount Invoice Line Items.
