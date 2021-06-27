@@ -27,16 +27,9 @@ public with sharing class InvoiceLineItemsController {
 		List<Invoice_Line_Item__c> itemsList;
 
 		itemsList = new List<Invoice_Line_Item__c>();
-		try
+		for (Invoice_Line_Item__c item : [SELECT Id, Name, Amount__c FROM Invoice_Line_Item__c WHERE Invoice__c = :invoiceId LIMIT 50000])
 		{
-			for (Invoice_Line_Item__c item : [SELECT Id, Name, Amount__c FROM Invoice_Line_Item__c WHERE Invoice__c = :invoiceId LIMIT 50000])
-			{
-				itemsList.add(item);
-			}
-		}
-		catch (Exception e)
-		{
-			DebugUtils.printExceptionTypeAndMessage(e);
+			itemsList.add(item);
 		}
 		return itemsList;
 	}
