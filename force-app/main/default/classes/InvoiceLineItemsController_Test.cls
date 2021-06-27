@@ -179,4 +179,40 @@ private with sharing class InvoiceLineItemsController_Test {
 		query += MAX_QUERY_LIMIT;
 		System.assertEquals(Database.countQuery(query), itemsList.size(), DIFFERENT_NUM_ILIS_W_NULL_INVOICE_ID_MSG);
 	}
+
+	/**
+	 * @name: getInvoiceLineItemsNullTest
+	 * @description: Test getInvoiceLineItems method with null outcome
+	 * @author: Richard Soto - richardsoto@outlook.com
+	 * @version: 0.1
+	 * @param: N/A
+	 * @return: N/A
+	 * @history
+	 * =======
+	 * v0.1 - 2021-06-25 - Initial version
+	 */
+	@IsTest
+	static void getInvoiceLineItemsInvalidIdTest()
+	{
+		User						user;
+		Id							invoiceId;
+		List<Invoice_Line_Item__c>	itemsList;
+
+		for (User testUser : [SELECT Id FROM User WHERE Username = :TestDataFactory.USERNAME_TEST LIMIT 1])
+		{
+			user = testUser;
+		}
+		
+		for (Invoice_Line_Item__c item : [SELECT Id FROM Invoice_Line_Item__c LIMIT 1])
+		{
+			invoiceId = item.Id;
+		}
+		Test.startTest();
+		System.runAs(user)
+		{
+			itemsList = InvoiceLineItemsController.getInvoiceLineItems(invoiceId);
+		}
+		Test.stopTest();
+		System.assertEquals(0, itemsList.size(), DIFFERENT_NUM_ILIS_W_NULL_INVOICE_ID_MSG);
+	}
 }
